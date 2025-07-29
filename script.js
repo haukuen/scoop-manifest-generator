@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!value.trim()) return null;
         const lines = parseMultilineToArray(value);
         if (!lines) return null;
-        
+
         if (lines.length === 1) {
             const line = lines[0];
             if (line.includes(',')) {
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return line;
         }
-        
+
         // 多行，每行可能是简单字符串或数组格式
         return lines.map(line => {
             if (line.includes(',')) {
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!value.trim()) return null;
         const lines = parseMultilineToArray(value);
         if (!lines) return null;
-        
+
         return lines.map(line => {
             // 尝试解析JSON数组格式
             if (line.startsWith('[') && line.endsWith(']')) {
@@ -119,55 +119,148 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateJson = () => {
         const manifest = {};
 
-        // 必填字段
+        // 按照指定顺序构建manifest对象
+        // 1. version
         const version = document.getElementById('version').value.trim();
+        if (version) manifest.version = version;
+
+        // 2. description
         const description = document.getElementById('description').value.trim();
+        if (description) manifest.description = description;
+
+        // 3. homepage
         const homepage = document.getElementById('homepage').value.trim();
+        if (homepage) manifest.homepage = homepage;
+
         const license = document.getElementById('license').value.trim();
         const url = document.getElementById('url').value.trim();
         const hash = document.getElementById('hash').value.trim();
 
-        if (version) manifest.version = version;
-        if (description) manifest.description = description;
-        if (homepage) manifest.homepage = homepage;
-        
-        // 处理许可证字段
-         const licenseAdvanced = document.getElementById('license_advanced').checked;
-         if (licenseAdvanced) {
-             const licenseIdentifier = document.getElementById('license_identifier').value.trim();
-             const licenseUrl = document.getElementById('license_url').value.trim();
-             
-             if (licenseIdentifier || licenseUrl) {
-                 const licenseObj = {};
-                 if (licenseIdentifier) licenseObj.identifier = licenseIdentifier;
-                 if (licenseUrl) licenseObj.url = licenseUrl;
-                 manifest.license = licenseObj;
-             } else if (license) {
-                 manifest.license = license;
-             }
-         } else if (license) {
-             manifest.license = license;
-         }
-        // 架构支持
+        // 4. license
+        const licenseAdvanced = document.getElementById('license_advanced').checked;
+        if (licenseAdvanced) {
+            const licenseIdentifier = document.getElementById('license_identifier').value.trim();
+            const licenseUrl = document.getElementById('license_url').value.trim();
+
+            if (licenseIdentifier || licenseUrl) {
+                const licenseObj = {};
+                if (licenseIdentifier) licenseObj.identifier = licenseIdentifier;
+                if (licenseUrl) licenseObj.url = licenseUrl;
+                manifest.license = licenseObj;
+            } else if (license) {
+                manifest.license = license;
+            }
+        } else if (license) {
+            manifest.license = license;
+        }
+        // 5. architecture (如果启用多架构)
         const enableArchitecture = document.getElementById('enable_architecture').checked;
-        if (!enableArchitecture) {
-            // 只有在非多架构模式下才添加外层的url和hash
+        if (enableArchitecture) {
+            const architecture = {};
+
+            // 64位架构
+            const arch64Url = document.getElementById('arch_64_url').value.trim();
+            const arch64Hash = document.getElementById('arch_64_hash').value.trim();
+            const arch64ExtractDir = document.getElementById('arch_64_extract_dir').value.trim();
+
+            if (arch64Url || arch64Hash || arch64ExtractDir) {
+                architecture['64bit'] = {};
+                if (arch64Url) architecture['64bit'].url = arch64Url;
+                if (arch64Hash) architecture['64bit'].hash = arch64Hash;
+                if (arch64ExtractDir) architecture['64bit'].extract_dir = arch64ExtractDir;
+            }
+
+            // 32位架构
+            const arch32Url = document.getElementById('arch_32_url').value.trim();
+            const arch32Hash = document.getElementById('arch_32_hash').value.trim();
+            const arch32ExtractDir = document.getElementById('arch_32_extract_dir').value.trim();
+
+            if (arch32Url || arch32Hash || arch32ExtractDir) {
+                architecture['32bit'] = {};
+                if (arch32Url) architecture['32bit'].url = arch32Url;
+                if (arch32Hash) architecture['32bit'].hash = arch32Hash;
+                if (arch32ExtractDir) architecture['32bit'].extract_dir = arch32ExtractDir;
+            }
+
+            // ARM64架构
+            const archArm64Url = document.getElementById('arch_arm64_url').value.trim();
+            const archArm64Hash = document.getElementById('arch_arm64_hash').value.trim();
+            const archArm64ExtractDir = document.getElementById('arch_arm64_extract_dir').value.trim();
+
+            if (archArm64Url || archArm64Hash || archArm64ExtractDir) {
+                architecture['arm64'] = {};
+                if (archArm64Url) architecture['arm64'].url = archArm64Url;
+                if (archArm64Hash) architecture['arm64'].hash = archArm64Hash;
+                if (archArm64ExtractDir) architecture['arm64'].extract_dir = archArm64ExtractDir;
+            }
+
+            if (Object.keys(architecture).length > 0) {
+                manifest.architecture = architecture;
+            }
+        } else {
+            // 单架构模式下添加url和hash
             if (url) manifest.url = url;
             if (hash) manifest.hash = hash;
         }
 
-        // 安装配置
+        // 6. bin
+        const bin = parseBin(document.getElementById('bin').value);
+        if (bin) manifest.bin = bin;
+
+        // 7. checkver
+        const checkverSimpleMode = document.getElementById('checkver_simple_mode').checked;
+        if (checkverSimpleMode) {
+            manifest.checkver = "github";
+        } else {
+            const checkverUrl = document.getElementById('checkver_url').value.trim();
+            const checkverRegex = document.getElementById('checkver_regex').value.trim();
+            if (checkverUrl && checkverRegex) {
+                manifest.checkver = {
+                    url: checkverUrl,
+                    regex: checkverRegex
+                };
+            }
+        }
+
+        // 8. autoupdate
+        if (enableArchitecture) {
+            // 多架构模式
+            const autoupdate64bitUrl = document.getElementById('autoupdate_64bit_url').value.trim();
+            const autoupdate32bitUrl = document.getElementById('autoupdate_32bit_url').value.trim();
+            const autoupdateArm64Url = document.getElementById('autoupdate_arm64_url').value.trim();
+
+            if (autoupdate64bitUrl || autoupdate32bitUrl || autoupdateArm64Url) {
+                const autoupdate = { architecture: {} };
+
+                if (autoupdate64bitUrl) {
+                    autoupdate.architecture['64bit'] = { url: autoupdate64bitUrl };
+                }
+                if (autoupdate32bitUrl) {
+                    autoupdate.architecture['32bit'] = { url: autoupdate32bitUrl };
+                }
+                if (autoupdateArm64Url) {
+                    autoupdate.architecture['arm64'] = { url: autoupdateArm64Url };
+                }
+
+                manifest.autoupdate = autoupdate;
+            }
+        } else {
+            // 单架构模式
+            const autoupdateUrl = document.getElementById('autoupdate_url').value.trim();
+            if (autoupdateUrl) {
+                manifest.autoupdate = { url: autoupdateUrl };
+            }
+        }
+
+        // 其他字段（按原有逻辑处理）
+
+        // 单架构模式下的extract_dir
         if (!enableArchitecture) {
-            // 单架构模式下的extract_dir
             const extractDir = document.getElementById('extract_dir').value.trim();
             if (extractDir) manifest.extract_dir = extractDir;
         }
-        
-        // bin字段处理（单架构和多架构都需要）
-        const bin = parseBin(document.getElementById('bin').value);
-        if (bin) manifest.bin = bin;
-        
-        // 快捷方式和持久化（只在启用时处理）
+
+        // 快捷方式和持久化
         const enableShortcutsPersist = document.getElementById('enable_shortcuts_persist').checked;
         if (enableShortcutsPersist) {
             const shortcuts = parseShortcuts(document.getElementById('shortcuts').value);
@@ -176,8 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const persist = parseMultilineToArray(document.getElementById('persist').value);
             if (persist) manifest.persist = persist;
         }
-        
-        // 依赖管理（只在启用时处理）
+
+        // 依赖管理
         const enableDependencies = document.getElementById('enable_dependencies').checked;
         if (enableDependencies) {
             const depends = parseMultilineToArray(document.getElementById('depends').value);
@@ -187,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (suggest) manifest.suggest = suggest;
         }
 
-        // 环境变量（只在启用时处理）
+        // 环境变量
         const enableEnvironment = document.getElementById('enable_environment').checked;
         if (enableEnvironment) {
             const envAddPath = parseMultilineToArray(document.getElementById('env_add_path').value);
@@ -197,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (envSet) manifest.env_set = envSet;
         }
 
-        // 安装器设置（只在启用时处理）
+        // 安装器设置
         const enableInstaller = document.getElementById('enable_installer').checked;
         if (enableInstaller) {
             const innosetup = document.getElementById('innosetup').checked;
@@ -217,117 +310,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (postInstall) manifest.post_install = postInstall.length === 1 ? postInstall[0] : postInstall;
         }
 
-        // checkver处理（独立于其他设置）
-        const checkverSimpleMode = document.getElementById('checkver_simple_mode').checked;
-        if (checkverSimpleMode) {
-            // 简单模式：直接使用"github"
-            manifest.checkver = "github";
-        } else {
-            // 高级模式：构建对象
-            const checkverUrl = document.getElementById('checkver_url').value.trim();
-            const checkverRegex = document.getElementById('checkver_regex').value.trim();
-            if (checkverUrl && checkverRegex) {
-                manifest.checkver = {
-                    url: checkverUrl,
-                    regex: checkverRegex
-                };
-            }
-        }
 
 
-
-        // autoupdate处理
-        if (enableArchitecture) {
-            // 多架构模式
-            const autoupdate64bitUrl = document.getElementById('autoupdate_64bit_url').value.trim();
-            const autoupdate32bitUrl = document.getElementById('autoupdate_32bit_url').value.trim();
-            const autoupdateArm64Url = document.getElementById('autoupdate_arm64_url').value.trim();
-            
-            if (autoupdate64bitUrl || autoupdate32bitUrl || autoupdateArm64Url) {
-                const autoupdateObj = {
-                    architecture: {}
-                };
-                
-                if (autoupdate64bitUrl) {
-                    autoupdateObj.architecture['64bit'] = {
-                        url: autoupdate64bitUrl
-                    };
-                }
-                
-                if (autoupdate32bitUrl) {
-                    autoupdateObj.architecture['32bit'] = {
-                        url: autoupdate32bitUrl
-                    };
-                }
-                
-                if (autoupdateArm64Url) {
-                    autoupdateObj.architecture['arm64'] = {
-                        url: autoupdateArm64Url
-                    };
-                }
-                
-                manifest.autoupdate = autoupdateObj;
-            }
-        } else {
-            // 单架构模式
-            const autoupdateUrl = document.getElementById('autoupdate_url').value.trim();
-            
-            if (autoupdateUrl) {
-                manifest.autoupdate = {
-                    url: autoupdateUrl
-                };
-            }
-        }
-
-        // 其他设置（只在启用时处理）
+        // 其他设置
         const enableMisc = document.getElementById('enable_misc').checked;
         if (enableMisc) {
             const notes = parseMultilineToArray(document.getElementById('notes').value);
             if (notes) manifest.notes = notes.length === 1 ? notes[0] : notes;
-        }
-
-        if (enableArchitecture) {
-            const architecture = {};
-            
-            // 64位架构
-            const arch64Url = document.getElementById('arch_64_url').value.trim();
-            const arch64Hash = document.getElementById('arch_64_hash').value.trim();
-            const arch64ExtractDir = document.getElementById('arch_64_extract_dir').value.trim();
-            
-            if (arch64Url || arch64Hash || arch64ExtractDir) {
-                architecture['64bit'] = {};
-                if (arch64Url) architecture['64bit'].url = arch64Url;
-                if (arch64Hash) architecture['64bit'].hash = arch64Hash;
-                if (arch64ExtractDir) architecture['64bit'].extract_dir = arch64ExtractDir;
-            }
-            
-            // 32位架构
-            const arch32Url = document.getElementById('arch_32_url').value.trim();
-            const arch32Hash = document.getElementById('arch_32_hash').value.trim();
-            const arch32ExtractDir = document.getElementById('arch_32_extract_dir').value.trim();
-            
-            if (arch32Url || arch32Hash || arch32ExtractDir) {
-                architecture['32bit'] = {};
-                if (arch32Url) architecture['32bit'].url = arch32Url;
-                if (arch32Hash) architecture['32bit'].hash = arch32Hash;
-                if (arch32ExtractDir) architecture['32bit'].extract_dir = arch32ExtractDir;
-            }
-            
-            // ARM64架构
-            const archArm64Url = document.getElementById('arch_arm64_url').value.trim();
-            const archArm64Hash = document.getElementById('arch_arm64_hash').value.trim();
-            const archArm64ExtractDir = document.getElementById('arch_arm64_extract_dir').value.trim();
-            
-            if (archArm64Url || archArm64Hash || archArm64ExtractDir) {
-                architecture['arm64'] = {};
-                if (archArm64Url) architecture['arm64'].url = archArm64Url;
-                if (archArm64Hash) architecture['arm64'].hash = archArm64Hash;
-                if (archArm64ExtractDir) architecture['arm64'].extract_dir = archArm64ExtractDir;
-            }
-            
-            if (Object.keys(architecture).length > 0) {
-                manifest.architecture = architecture;
-            }
         }
 
 
@@ -341,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleLicenseSection = () => {
         const licenseAdvanced = document.getElementById('license_advanced');
         const licenseAdvancedSection = document.getElementById('license_advanced_section');
-        
+
         licenseAdvanced.addEventListener('change', () => {
             if (licenseAdvanced.checked) {
                 licenseAdvancedSection.style.display = 'block';
@@ -358,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleCheckverSection = () => {
         const checkverSimpleMode = document.getElementById('checkver_simple_mode');
         const checkverAdvancedSection = document.getElementById('checkver_advanced_section');
-        
+
         checkverSimpleMode.addEventListener('change', () => {
             if (checkverSimpleMode.checked) {
                 checkverAdvancedSection.style.display = 'none';
@@ -374,14 +363,14 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const toggleArchitectureSections = () => {
         const enableArchitecture = document.getElementById('enable_architecture');
-        
+
         enableArchitecture.addEventListener('change', () => {
             const singleArchSection = document.getElementById('single_arch_section');
             const singleArchInstallSection = document.getElementById('single_arch_install_section');
             const architectureSection = document.getElementById('architecture_section');
             const singleArchAutoupdateSection = document.getElementById('single_arch_autoupdate_section');
             const multiArchAutoupdateSection = document.getElementById('multi_arch_autoupdate_section');
-            
+
             if (enableArchitecture.checked) {
                 if (singleArchSection) singleArchSection.style.display = 'none';
                 if (singleArchInstallSection) singleArchInstallSection.style.display = 'none';
@@ -414,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
-        
+
         // 依赖管理
         const enableDependencies = document.getElementById('enable_dependencies');
         if (enableDependencies) {
@@ -426,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
-        
+
         // 环境变量
         const enableEnvironment = document.getElementById('enable_environment');
         if (enableEnvironment) {
@@ -438,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
-        
+
         // 安装器设置
         const enableInstaller = document.getElementById('enable_installer');
         if (enableInstaller) {
@@ -450,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
-        
+
         // 其他设置
         const enableMisc = document.getElementById('enable_misc');
         if (enableMisc) {
@@ -462,39 +451,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
-        
+
 
     };
 
     form.addEventListener('input', updateJson);
-    
-    // 监听架构相关字段的变化
+
     document.getElementById('enable_architecture').addEventListener('change', updateJson);
     document.getElementById('license_advanced').addEventListener('change', updateJson);
     document.getElementById('checkver_simple_mode').addEventListener('change', updateJson);
-    
-    // 为所有切换功能添加事件监听器
-     const toggleElements = ['enable_shortcuts_persist', 'enable_dependencies', 'enable_environment', 'enable_installer', 'enable_misc'];
-     toggleElements.forEach(id => {
-         const element = document.getElementById(id);
-         if (element) {
-             element.addEventListener('change', updateJson);
-         }
-     });
-     
-    // checkver高级模式字段
+
+    const toggleElements = ['enable_shortcuts_persist', 'enable_dependencies', 'enable_environment', 'enable_installer', 'enable_misc'];
+    toggleElements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', updateJson);
+        }
+    });
+
     document.getElementById('checkver_url').addEventListener('input', updateJson);
     document.getElementById('checkver_regex').addEventListener('input', updateJson);
-    
+
     ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir',
-      'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir',
-      'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir',
-      'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url', 'bin'].forEach(id => {
-         const element = document.getElementById(id);
-         if (element) {
-             element.addEventListener('input', updateJson);
-         }
-     });
+        'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir',
+        'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir',
+        'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url', 'bin'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', updateJson);
+            }
+        });
 
     copyButton.addEventListener('click', () => {
         navigator.clipboard.writeText(jsonPreview.textContent)
@@ -510,9 +496,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 初始化
-     toggleLicenseSection();
-     toggleArchitectureSections();
-     toggleOptionalSections();
-     toggleCheckverSection();
-     updateJson();
+    toggleLicenseSection();
+    toggleArchitectureSections();
+    toggleOptionalSections();
+    toggleCheckverSection();
+    updateJson();
 });
