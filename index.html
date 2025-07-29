@@ -100,8 +100,11 @@
                                 <input type="url" class="form-control" id="url" placeholder="https://example.com/download.zip" required>
                             </div>
                             <div class="mb-3">
-                                <label for="hash" class="form-label">Hash</label>
-                                <input type="text" class="form-control" id="hash" placeholder="SHA256哈希值" required>
+                                <div class="form-label-with-tooltip">
+                                    <label for="hash" class="form-label">Hash</label>
+                                    <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                </div>
+                                <input type="text" class="form-control" id="hash"required>
                             </div>
                         </div>
                         
@@ -115,8 +118,11 @@
                                         <input type="url" class="form-control" id="arch_64_url" placeholder="64位版本下载链接">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="arch_64_hash" class="form-label">Hash</label>
-                                        <input type="text" class="form-control" id="arch_64_hash" placeholder="64位版本哈希值">
+                                        <div class="form-label-with-tooltip">
+                                            <label for="arch_64_hash" class="form-label">Hash</label>
+                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="arch_64_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_64_extract_dir" class="form-label">Extract Dir</label>
@@ -130,8 +136,11 @@
                                         <input type="url" class="form-control" id="arch_32_url" placeholder="32位版本下载链接">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="arch_32_hash" class="form-label">Hash</label>
-                                        <input type="text" class="form-control" id="arch_32_hash" placeholder="32位版本哈希值">
+                                        <div class="form-label-with-tooltip">
+                                            <label for="arch_32_hash" class="form-label">Hash</label>
+                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="arch_32_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_32_extract_dir" class="form-label">Extract Dir</label>
@@ -145,8 +154,11 @@
                                         <input type="url" class="form-control" id="arch_arm64_url" placeholder="ARM64版本下载链接">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="arch_arm64_hash" class="form-label">Hash</label>
-                                        <input type="text" class="form-control" id="arch_arm64_hash" placeholder="ARM64版本哈希值">
+                                        <div class="form-label-with-tooltip">
+                                            <label for="arch_arm64_hash" class="form-label">Hash</label>
+                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="arch_arm64_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_arm64_extract_dir" class="form-label">Extract Dir</label>
