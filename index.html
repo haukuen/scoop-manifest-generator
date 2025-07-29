@@ -184,6 +184,45 @@
                             </div>
                         </div>
                         
+                        <!-- Autoupdate配置 -->
+                        <h6 class="text-secondary mb-3 mt-4">🔄 自动更新配置</h6>
+                        
+                        <!-- 单架构自动更新 -->
+                        <div id="single_arch_autoupdate_section">
+                            <div class="mb-3">
+                                <label for="autoupdate_url" class="form-label">更新 URL</label>
+                                <input type="text" class="form-control" id="autoupdate_url" placeholder="https://example.com/v$version/app.zip">
+                                <div class="form-text">使用 $version 作为版本占位符</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 多架构自动更新 -->
+                        <div id="multi_arch_autoupdate_section" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="autoupdate_64bit_url" class="form-label">64位 URL</label>
+                                        <input type="text" class="form-control" id="autoupdate_64bit_url" placeholder="https://example.com/v$version/app_x64.zip">
+                                        <div class="form-text">使用 $version 作为版本占位符</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="autoupdate_32bit_url" class="form-label">32位 URL</label>
+                                        <input type="text" class="form-control" id="autoupdate_32bit_url" placeholder="https://example.com/v$version/app_x86.zip">
+                                        <div class="form-text">使用 $version 作为版本占位符</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="autoupdate_arm64_url" class="form-label">ARM64 URL</label>
+                                        <input type="text" class="form-control" id="autoupdate_arm64_url" placeholder="https://example.com/v$version/app_arm64.zip">
+                                        <div class="form-text">使用 $version 作为版本占位符</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <!-- 快捷方式和持久化 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -304,13 +343,6 @@
                         </div>
                         
 
-                        
-                        <!-- 高级功能 -->
-                        
-                        <div class="mb-3">
-                            <label for="autoupdate" class="form-label">Autoupdate</label>
-                            <textarea class="form-control" id="autoupdate" rows="5" placeholder='例如: {"architecture": {"64bit": {"url": "https://example.com/v$version/app_x64.zip"}}}'></textarea>
-                        </div>
                     </form>
                 </div>
             </div>

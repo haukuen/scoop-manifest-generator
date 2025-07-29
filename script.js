@@ -234,14 +234,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-        // autoupdate处理（独立于其他设置）
-        const autoupdate = document.getElementById('autoupdate').value.trim();
-        if (autoupdate) {
-            try {
-                const autoupdateObj = JSON.parse(autoupdate);
+        // autoupdate处理
+        if (enableArchitecture) {
+            // 多架构模式
+            const autoupdate64bitUrl = document.getElementById('autoupdate_64bit_url').value.trim();
+            const autoupdate32bitUrl = document.getElementById('autoupdate_32bit_url').value.trim();
+            const autoupdateArm64Url = document.getElementById('autoupdate_arm64_url').value.trim();
+            
+            if (autoupdate64bitUrl || autoupdate32bitUrl || autoupdateArm64Url) {
+                const autoupdateObj = {
+                    architecture: {}
+                };
+                
+                if (autoupdate64bitUrl) {
+                    autoupdateObj.architecture['64bit'] = {
+                        url: autoupdate64bitUrl
+                    };
+                }
+                
+                if (autoupdate32bitUrl) {
+                    autoupdateObj.architecture['32bit'] = {
+                        url: autoupdate32bitUrl
+                    };
+                }
+                
+                if (autoupdateArm64Url) {
+                    autoupdateObj.architecture['arm64'] = {
+                        url: autoupdateArm64Url
+                    };
+                }
+                
                 manifest.autoupdate = autoupdateObj;
-            } catch (e) {
-                // JSON解析失败时忽略
+            }
+        } else {
+            // 单架构模式
+            const autoupdateUrl = document.getElementById('autoupdate_url').value.trim();
+            
+            if (autoupdateUrl) {
+                manifest.autoupdate = {
+                    url: autoupdateUrl
+                };
             }
         }
 
@@ -351,15 +383,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const singleArchSection = document.getElementById('single_arch_section');
             const singleArchInstallSection = document.getElementById('single_arch_install_section');
             const architectureSection = document.getElementById('architecture_section');
+            const singleArchAutoupdateSection = document.getElementById('single_arch_autoupdate_section');
+            const multiArchAutoupdateSection = document.getElementById('multi_arch_autoupdate_section');
             
             if (enableArchitecture.checked) {
                 if (singleArchSection) singleArchSection.style.display = 'none';
                 if (singleArchInstallSection) singleArchInstallSection.style.display = 'none';
                 if (architectureSection) architectureSection.style.display = 'block';
+                if (singleArchAutoupdateSection) singleArchAutoupdateSection.style.display = 'none';
+                if (multiArchAutoupdateSection) multiArchAutoupdateSection.style.display = 'block';
             } else {
                 if (singleArchSection) singleArchSection.style.display = 'block';
                 if (singleArchInstallSection) singleArchInstallSection.style.display = 'block';
                 if (architectureSection) architectureSection.style.display = 'none';
+                if (singleArchAutoupdateSection) singleArchAutoupdateSection.style.display = 'block';
+                if (multiArchAutoupdateSection) multiArchAutoupdateSection.style.display = 'none';
             }
             updateJson();
         });
@@ -428,6 +466,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateJson();
             });
         }
+        
+
     };
 
     form.addEventListener('input', updateJson);
@@ -453,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir', 'arch_64_bin',
       'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir', 'arch_32_bin',
       'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir', 'arch_arm64_bin',
-      'autoupdate', 'license_identifier', 'license_url'].forEach(id => {
+      'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url'].forEach(id => {
          const element = document.getElementById(id);
          if (element) {
              element.addEventListener('input', updateJson);
