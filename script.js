@@ -232,16 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // checkver高级格式处理（JSON格式）
-        const checkverAdvanced = document.getElementById('checkver_advanced').value.trim();
-        if (checkverAdvanced) {
-            try {
-                const checkverAdvancedObj = JSON.parse(checkverAdvanced);
-                manifest.checkver = checkverAdvancedObj;
-            } catch (e) {
-                // JSON解析失败时忽略
-            }
-        }
+
 
         // autoupdate处理（独立于其他设置）
         const autoupdate = document.getElementById('autoupdate').value.trim();
@@ -462,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir', 'arch_64_bin',
       'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir', 'arch_32_bin',
       'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir', 'arch_arm64_bin',
-      'checkver_advanced', 'autoupdate', 'license_identifier', 'license_url'].forEach(id => {
+      'autoupdate', 'license_identifier', 'license_url'].forEach(id => {
          const element = document.getElementById(id);
          if (element) {
              element.addEventListener('input', updateJson);
