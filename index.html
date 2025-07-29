@@ -122,10 +122,6 @@
                                         <label for="arch_64_extract_dir" class="form-label">Extract Dir</label>
                                         <input type="text" class="form-control" id="arch_64_extract_dir" placeholder="解压目录">
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="arch_64_bin" class="form-label">Bin</label>
-                                        <textarea class="form-control" id="arch_64_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
-                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <h6 class="text-secondary">32位架构</h6>
@@ -140,10 +136,6 @@
                                     <div class="mb-3">
                                         <label for="arch_32_extract_dir" class="form-label">Extract Dir</label>
                                         <input type="text" class="form-control" id="arch_32_extract_dir" placeholder="解压目录">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="arch_32_bin" class="form-label">Bin</label>
-                                        <textarea class="form-control" id="arch_32_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -160,10 +152,6 @@
                                         <label for="arch_arm64_extract_dir" class="form-label">Extract Dir</label>
                                         <input type="text" class="form-control" id="arch_arm64_extract_dir" placeholder="解压目录">
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="arch_arm64_bin" class="form-label">Bin</label>
-                                        <textarea class="form-control" id="arch_arm64_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -171,16 +159,16 @@
                         <!-- 安装配置 -->
                         <h6 class="text-primary mb-3 mt-4">⚙️ 安装配置</h6>
                         
+                        <div class="mb-3">
+                            <label for="bin" class="form-label">Bin</label>
+                            <textarea class="form-control" id="bin" rows="2" placeholder="每行一个可执行文件路径，或使用格式: 程序.exe,别名,参数"></textarea>
+                        </div>
+                        
                         <!-- 单架构安装配置 -->
                         <div id="single_arch_install_section">
                             <div class="mb-3">
                                 <label for="extract_dir" class="form-label">Extract Dir</label>
                                 <input type="text" class="form-control" id="extract_dir" placeholder="从压缩包中提取的目录名">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="bin" class="form-label">Bin</label>
-                                <textarea class="form-control" id="bin" rows="2" placeholder="每行一个可执行文件路径，或使用格式: 程序.exe,别名,参数"></textarea>
                             </div>
                         </div>
                         

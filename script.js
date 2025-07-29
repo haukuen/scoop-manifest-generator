@@ -156,14 +156,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (hash) manifest.hash = hash;
         }
 
-        // 单架构安装配置（只在非多架构模式下处理）
+        // 安装配置
         if (!enableArchitecture) {
+            // 单架构模式下的extract_dir
             const extractDir = document.getElementById('extract_dir').value.trim();
             if (extractDir) manifest.extract_dir = extractDir;
-
-            const bin = parseBin(document.getElementById('bin').value);
-            if (bin) manifest.bin = bin;
         }
+        
+        // bin字段处理（单架构和多架构都需要）
+        const bin = parseBin(document.getElementById('bin').value);
+        if (bin) manifest.bin = bin;
         
         // 快捷方式和持久化（只在启用时处理）
         const enableShortcutsPersist = document.getElementById('enable_shortcuts_persist').checked;
@@ -291,42 +293,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const arch64Url = document.getElementById('arch_64_url').value.trim();
             const arch64Hash = document.getElementById('arch_64_hash').value.trim();
             const arch64ExtractDir = document.getElementById('arch_64_extract_dir').value.trim();
-            const arch64Bin = parseBin(document.getElementById('arch_64_bin').value);
             
-            if (arch64Url || arch64Hash || arch64ExtractDir || arch64Bin) {
+            if (arch64Url || arch64Hash || arch64ExtractDir) {
                 architecture['64bit'] = {};
                 if (arch64Url) architecture['64bit'].url = arch64Url;
                 if (arch64Hash) architecture['64bit'].hash = arch64Hash;
                 if (arch64ExtractDir) architecture['64bit'].extract_dir = arch64ExtractDir;
-                if (arch64Bin) architecture['64bit'].bin = arch64Bin;
             }
             
             // 32位架构
             const arch32Url = document.getElementById('arch_32_url').value.trim();
             const arch32Hash = document.getElementById('arch_32_hash').value.trim();
             const arch32ExtractDir = document.getElementById('arch_32_extract_dir').value.trim();
-            const arch32Bin = parseBin(document.getElementById('arch_32_bin').value);
             
-            if (arch32Url || arch32Hash || arch32ExtractDir || arch32Bin) {
+            if (arch32Url || arch32Hash || arch32ExtractDir) {
                 architecture['32bit'] = {};
                 if (arch32Url) architecture['32bit'].url = arch32Url;
                 if (arch32Hash) architecture['32bit'].hash = arch32Hash;
                 if (arch32ExtractDir) architecture['32bit'].extract_dir = arch32ExtractDir;
-                if (arch32Bin) architecture['32bit'].bin = arch32Bin;
             }
             
             // ARM64架构
             const archArm64Url = document.getElementById('arch_arm64_url').value.trim();
             const archArm64Hash = document.getElementById('arch_arm64_hash').value.trim();
             const archArm64ExtractDir = document.getElementById('arch_arm64_extract_dir').value.trim();
-            const archArm64Bin = parseBin(document.getElementById('arch_arm64_bin').value);
             
-            if (archArm64Url || archArm64Hash || archArm64ExtractDir || archArm64Bin) {
+            if (archArm64Url || archArm64Hash || archArm64ExtractDir) {
                 architecture['arm64'] = {};
                 if (archArm64Url) architecture['arm64'].url = archArm64Url;
                 if (archArm64Hash) architecture['arm64'].hash = archArm64Hash;
                 if (archArm64ExtractDir) architecture['arm64'].extract_dir = archArm64ExtractDir;
-                if (archArm64Bin) architecture['arm64'].bin = archArm64Bin;
             }
             
             if (Object.keys(architecture).length > 0) {
@@ -490,10 +486,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('checkver_url').addEventListener('input', updateJson);
     document.getElementById('checkver_regex').addEventListener('input', updateJson);
     
-    ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir', 'arch_64_bin',
-      'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir', 'arch_32_bin',
-      'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir', 'arch_arm64_bin',
-      'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url'].forEach(id => {
+    ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir',
+      'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir',
+      'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir',
+      'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url', 'bin'].forEach(id => {
          const element = document.getElementById(id);
          if (element) {
              element.addEventListener('input', updateJson);
