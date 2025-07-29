@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoop Manifest 生成器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row vh-100">
+            <div class="col-md-6 border-end overflow-auto">
+                <div class="p-4">
+                    <h2 class="mb-4">Scoop Manifest 生成器</h2>
+                    <form id="manifest-form">
+                        <!-- 基本信息 -->
+                        <h6 class="text-primary mb-3">📋 基本信息</h6>
+                        <div class="mb-3">
+                            <label for="version" class="form-label">Version <span class="text-muted">(应用版本)</span></label>
+                            <input type="text" class="form-control" id="version" placeholder="例如: 1.0.0, 2.1.3" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description <span class="text-muted">(应用描述)</span></label>
+                            <input type="text" class="form-control" id="description" placeholder="简短描述应用的功能" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="homepage" class="form-label">Homepage <span class="text-muted">(官方网站)</span></label>
+                            <input type="url" class="form-control" id="homepage" placeholder="https://example.com" required>
+                        </div>
+                        
+                        <!-- 许可证信息 -->
+                        <h6 class="text-primary mb-3 mt-4">📄 许可证信息</h6>
+                        <div class="mb-3">
+                            <label for="license" class="form-label">License <span class="text-muted">(许可证)</span></label>
+                            <input type="text" class="form-control" id="license" placeholder="MIT, GPL-3.0, Proprietary等" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="license_advanced">
+                                <label class="form-check-label" for="license_advanced">
+                                    使用高级许可证格式 (包含URL)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="license_advanced_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="license_identifier" class="form-label">License Identifier</label>
+                                <input type="text" class="form-control" id="license_identifier" placeholder="例如: Shareware, MIT, GPL-3.0">
+                            </div>
+                            <div class="mb-3">
+                                <label for="license_url" class="form-label">License URL</label>
+                                <input type="url" class="form-control" id="license_url" placeholder="许可证的完整URL">
+                            </div>
+                        </div>
+                        
+                        <!-- 版本检查 -->
+                        <h6 class="text-primary mb-3 mt-4">🔍 版本检查</h6>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkver_simple_mode" checked>
+                                <label class="form-check-label" for="checkver_simple_mode">
+                                    启用GitHub版本检查
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="checkver_advanced_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="checkver_url" class="form-label">Checkver URL</label>
+                                <input type="text" class="form-control" id="checkver_url" placeholder="https://www.7-zip.org/download.html">
+                            </div>
+                            <div class="mb-3">
+                                <label for="checkver_regex" class="form-label">Checkver Regex</label>
+                                <input type="text" class="form-control" id="checkver_regex" placeholder="Download 7-Zip ([\\d.]+) \\(\\d{4}-\\d{2}-\\d{2}\\)">
+                            </div>
+                        </div>
+                        
+                        <!-- 下载信息 -->
+                        <h6 class="text-primary mb-3 mt-4">📦 下载信息</h6>
+                        
+                        <!-- 多架构支持选项 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_architecture">
+                                <label class="form-check-label" for="enable_architecture">
+                                    启用多架构支持
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- 单架构下载信息 -->
+                        <div id="single_arch_section">
+                            <div class="mb-3">
+                                <label for="url" class="form-label">URL <span class="text-muted">(下载链接)</span></label>
+                                <input type="url" class="form-control" id="url" placeholder="https://example.com/download.zip" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="hash" class="form-label">Hash <span class="text-muted">(文件哈希)</span></label>
+                                <input type="text" class="form-control" id="hash" placeholder="SHA256哈希值" required>
+                            </div>
+                        </div>
+                        
+                        <!-- 多架构下载信息 -->
+                        <div id="architecture_section" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6 class="text-secondary">64位架构</h6>
+                                    <div class="mb-3">
+                                        <label for="arch_64_url" class="form-label">URL</label>
+                                        <input type="url" class="form-control" id="arch_64_url" placeholder="64位版本下载链接">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_64_hash" class="form-label">Hash</label>
+                                        <input type="text" class="form-control" id="arch_64_hash" placeholder="64位版本哈希值">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_64_extract_dir" class="form-label">Extract Dir</label>
+                                        <input type="text" class="form-control" id="arch_64_extract_dir" placeholder="解压目录">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_64_bin" class="form-label">Bin</label>
+                                        <textarea class="form-control" id="arch_64_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-secondary">32位架构</h6>
+                                    <div class="mb-3">
+                                        <label for="arch_32_url" class="form-label">URL</label>
+                                        <input type="url" class="form-control" id="arch_32_url" placeholder="32位版本下载链接">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_32_hash" class="form-label">Hash</label>
+                                        <input type="text" class="form-control" id="arch_32_hash" placeholder="32位版本哈希值">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_32_extract_dir" class="form-label">Extract Dir</label>
+                                        <input type="text" class="form-control" id="arch_32_extract_dir" placeholder="解压目录">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_32_bin" class="form-label">Bin</label>
+                                        <textarea class="form-control" id="arch_32_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-secondary">ARM64架构</h6>
+                                    <div class="mb-3">
+                                        <label for="arch_arm64_url" class="form-label">URL</label>
+                                        <input type="url" class="form-control" id="arch_arm64_url" placeholder="ARM64版本下载链接">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_arm64_hash" class="form-label">Hash</label>
+                                        <input type="text" class="form-control" id="arch_arm64_hash" placeholder="ARM64版本哈希值">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_arm64_extract_dir" class="form-label">Extract Dir</label>
+                                        <input type="text" class="form-control" id="arch_arm64_extract_dir" placeholder="解压目录">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_arm64_bin" class="form-label">Bin</label>
+                                        <textarea class="form-control" id="arch_arm64_bin" rows="2" placeholder="可执行文件路径\n每行一个"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 安装配置 -->
+                        <h6 class="text-primary mb-3 mt-4">⚙️ 安装配置</h6>
+                        
+                        <!-- 单架构安装配置 -->
+                        <div id="single_arch_install_section">
+                            <div class="mb-3">
+                                <label for="extract_dir" class="form-label">Extract Dir <span class="text-muted">(解压目录)</span></label>
+                                <input type="text" class="form-control" id="extract_dir" placeholder="从压缩包中提取的目录名">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bin" class="form-label">Bin <span class="text-muted">(可执行文件)</span></label>
+                                <textarea class="form-control" id="bin" rows="2" placeholder="每行一个可执行文件路径，或使用格式: 程序.exe,别名,参数"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 快捷方式和持久化 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_shortcuts_persist">
+                                <label class="form-check-label" for="enable_shortcuts_persist">
+                                    配置快捷方式和持久化
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="shortcuts_persist_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="shortcuts" class="form-label">Shortcuts <span class="text-muted">(桌面快捷方式)</span></label>
+                                <textarea class="form-control" id="shortcuts" rows="3" placeholder="每行格式: [\"程序.exe\", \"显示名称\", \"参数\"]"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="persist" class="form-label">Persist <span class="text-muted">(持久化目录)</span></label>
+                                <textarea class="form-control" id="persist" rows="2" placeholder="每行一个需要持久化的目录或文件"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 依赖管理 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_dependencies">
+                                <label class="form-check-label" for="enable_dependencies">
+                                    配置依赖和建议
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="dependencies_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="depends" class="form-label">Depends <span class="text-muted">(运行时依赖)</span></label>
+                                <textarea class="form-control" id="depends" rows="2" placeholder="每行一个依赖包名"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="suggest" class="form-label">Suggest <span class="text-muted">(建议安装)</span></label>
+                                <textarea class="form-control" id="suggest" rows="2" placeholder="格式: 功能描述: 包名"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 环境变量设置 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_environment">
+                                <label class="form-check-label" for="enable_environment">
+                                    配置环境变量
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="environment_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="env_add_path" class="form-label">Env Add Path <span class="text-muted">(添加到PATH)</span></label>
+                                <textarea class="form-control" id="env_add_path" rows="2" placeholder="每行一个相对于安装目录的路径"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="env_set" class="form-label">Env Set <span class="text-muted">(设置环境变量)</span></label>
+                                <textarea class="form-control" id="env_set" rows="2" placeholder="每行格式: 变量名=值"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 安装器设置 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_installer">
+                                <label class="form-check-label" for="enable_installer">
+                                    配置安装器和脚本
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="installer_section" style="display: none;">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="innosetup">
+                                    <label class="form-check-label" for="innosetup">
+                                        InnoSetup 安装器
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="installer_script" class="form-label">Installer Script <span class="text-muted">(安装脚本)</span></label>
+                                <textarea class="form-control" id="installer_script" rows="3" placeholder="每行一个安装命令"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="pre_install" class="form-label">Pre Install <span class="text-muted">(安装前脚本)</span></label>
+                                <textarea class="form-control" id="pre_install" rows="2" placeholder="每行一个预安装命令"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="post_install" class="form-label">Post Install <span class="text-muted">(安装后脚本)</span></label>
+                                <textarea class="form-control" id="post_install" rows="2" placeholder="每行一个后安装命令"></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- 其他设置 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_misc">
+                                <label class="form-check-label" for="enable_misc">
+                                    其他设置和说明
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div id="misc_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notes <span class="text-muted">(安装说明)</span></label>
+                                <textarea class="form-control" id="notes" rows="2" placeholder="安装后的使用说明或注意事项"></textarea>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <!-- 高级功能 -->
+                        <div class="mb-3">
+                            <label for="checkver_advanced" class="form-label">Checkver <span class="text-muted">(JSON格式)</span></label>
+                            <textarea class="form-control" id="checkver_advanced" rows="3" placeholder='例如: {"url": "https://example.com", "regex": "version ([\\d.]+)"}'></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="autoupdate" class="form-label">Autoupdate <span class="text-muted">(自动更新配置)</span></label>
+                            <textarea class="form-control" id="autoupdate" rows="5" placeholder='例如: {"architecture": {"64bit": {"url": "https://example.com/v$version/app_x64.zip"}}}'></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex flex-column">
+                <div class="p-4">
+                    <h2 class="mb-4">JSON 预览</h2>
+                    <pre id="json-preview" class="bg-light p-3 rounded">{
+    "version": "",
+    "description": "",
+    "homepage": "",
+    "license": "",
+    "url": "",
+    "hash": ""
+}</pre>
+                </div>
+                <div class="mt-auto p-4">
+                    <button id="copy-button" class="btn btn-primary w-100">复制到剪贴板</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

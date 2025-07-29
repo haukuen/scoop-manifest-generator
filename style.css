@@ -1,0 +1,165 @@
+
+/* 基础样式 */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+/* 左侧表单区域 */
+.overflow-auto {
+    height: 100vh;
+    padding-bottom: 2rem;
+}
+
+/* 表单样式优化 */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-label .text-muted {
+    font-weight: 400;
+    font-size: 0.875rem;
+}
+
+.form-control, .form-check-input {
+    border-radius: 0.375rem;
+    border: 1px solid #ced4da;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* 分组标题样式 */
+h4, h5 {
+    color: #212529;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+h5 {
+    border-bottom: 1px solid #e9ecef;
+    font-size: 1.1rem;
+}
+
+/* JSON预览区域 */
+#json-preview {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    flex-grow: 1;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #212529;
+}
+
+/* 复制按钮样式 */
+#copy-button {
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.15s ease-in-out;
+}
+
+#copy-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 右侧面板 */
+.col-md-6:last-child {
+    background-color: #ffffff;
+    border-left: 1px solid #dee2e6;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .col-md-6 {
+        height: auto;
+    }
+    
+    .overflow-auto {
+        height: auto;
+        max-height: 60vh;
+    }
+    
+    #json-preview {
+        height: 40vh;
+        min-height: 300px;
+    }
+}
+
+/* 滚动条样式 */
+.overflow-auto::-webkit-scrollbar,
+#json-preview::-webkit-scrollbar {
+    width: 8px;
+}
+
+.overflow-auto::-webkit-scrollbar-track,
+#json-preview::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb,
+#json-preview::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover,
+#json-preview::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* 表单验证样式 */
+.form-control:invalid {
+    border-color: #dc3545;
+}
+
+.form-control:valid {
+    border-color: #198754;
+}
+
+/* 工具提示样式 */
+.form-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* 动画效果 */
+.form-control, .btn {
+    transition: all 0.2s ease-in-out;
+}
+
+/* 页面标题样式 */
+h2 {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* 卡片样式效果 */
+.p-4 {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.col-md-6:first-child .p-4 {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
