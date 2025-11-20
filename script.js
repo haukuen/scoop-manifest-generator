@@ -168,6 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (arch64Url) architecture['64bit'].url = arch64Url;
                 if (arch64Hash) architecture['64bit'].hash = arch64Hash;
                 if (arch64ExtractDir) architecture['64bit'].extract_dir = arch64ExtractDir;
+
+                const arch64ExtractTo = document.getElementById('arch_64_extract_to').value.trim();
+                if (arch64ExtractTo) architecture['64bit'].extract_to = arch64ExtractTo;
             }
 
             // 32位架构
@@ -180,6 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (arch32Url) architecture['32bit'].url = arch32Url;
                 if (arch32Hash) architecture['32bit'].hash = arch32Hash;
                 if (arch32ExtractDir) architecture['32bit'].extract_dir = arch32ExtractDir;
+
+                const arch32ExtractTo = document.getElementById('arch_32_extract_to').value.trim();
+                if (arch32ExtractTo) architecture['32bit'].extract_to = arch32ExtractTo;
             }
 
             // ARM64架构
@@ -192,6 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (archArm64Url) architecture['arm64'].url = archArm64Url;
                 if (archArm64Hash) architecture['arm64'].hash = archArm64Hash;
                 if (archArm64ExtractDir) architecture['arm64'].extract_dir = archArm64ExtractDir;
+
+                const archArm64ExtractTo = document.getElementById('arch_arm64_extract_to').value.trim();
+                if (archArm64ExtractTo) architecture['arm64'].extract_to = archArm64ExtractTo;
             }
 
             if (Object.keys(architecture).length > 0) {
@@ -255,9 +264,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 其他字段（按原有逻辑处理）
 
         // 单架构模式下的extract_dir
+        // 单架构模式下的extract_dir和extract_to
         if (!enableArchitecture) {
             const extractDir = document.getElementById('extract_dir').value.trim();
             if (extractDir) manifest.extract_dir = extractDir;
+
+            const extractTo = document.getElementById('extract_to').value.trim();
+            if (extractTo) manifest.extract_to = extractTo;
         }
 
         // 快捷方式和持久化
@@ -310,6 +323,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (postInstall) manifest.post_install = postInstall.length === 1 ? postInstall[0] : postInstall;
         }
 
+        // 卸载器设置
+        const enableUninstaller = document.getElementById('enable_uninstaller').checked;
+        if (enableUninstaller) {
+            const uninstallerScript = parseMultilineToArray(document.getElementById('uninstaller_script').value);
+            if (uninstallerScript) {
+                manifest.uninstaller = {
+                    script: uninstallerScript.length === 1 ? uninstallerScript[0] : uninstallerScript
+                };
+            }
+
+            const preUninstall = parseMultilineToArray(document.getElementById('pre_uninstall').value);
+            if (preUninstall) manifest.pre_uninstall = preUninstall.length === 1 ? preUninstall[0] : preUninstall;
+
+            const postUninstall = parseMultilineToArray(document.getElementById('post_uninstall').value);
+            if (postUninstall) manifest.post_uninstall = postUninstall.length === 1 ? postUninstall[0] : postUninstall;
+        }
+
 
 
         // 其他设置
@@ -330,12 +360,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleLicenseSection = () => {
         const licenseAdvanced = document.getElementById('license_advanced');
         const licenseAdvancedSection = document.getElementById('license_advanced_section');
+        const licenseSimpleSection = document.getElementById('license_simple_section');
 
         licenseAdvanced.addEventListener('change', () => {
             if (licenseAdvanced.checked) {
                 licenseAdvancedSection.style.display = 'block';
+                if (licenseSimpleSection) licenseSimpleSection.style.display = 'none';
             } else {
                 licenseAdvancedSection.style.display = 'none';
+                if (licenseSimpleSection) licenseSimpleSection.style.display = 'block';
             }
             updateJson();
         });
@@ -452,6 +485,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // 卸载器设置
+        const enableUninstaller = document.getElementById('enable_uninstaller');
+        if (enableUninstaller) {
+            enableUninstaller.addEventListener('change', () => {
+                const uninstallerSection = document.getElementById('uninstaller_section');
+                if (uninstallerSection) {
+                    uninstallerSection.style.display = enableUninstaller.checked ? 'block' : 'none';
+                }
+                updateJson();
+            });
+        }
+
 
     };
 
@@ -461,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('license_advanced').addEventListener('change', updateJson);
     document.getElementById('checkver_simple_mode').addEventListener('change', updateJson);
 
-    const toggleElements = ['enable_shortcuts_persist', 'enable_dependencies', 'enable_environment', 'enable_installer', 'enable_misc'];
+    const toggleElements = ['enable_shortcuts_persist', 'enable_dependencies', 'enable_environment', 'enable_installer', 'enable_uninstaller', 'enable_misc'];
     toggleElements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -472,10 +517,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('checkver_url').addEventListener('input', updateJson);
     document.getElementById('checkver_regex').addEventListener('input', updateJson);
 
-    ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir',
-        'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir',
-        'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir',
-        'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url', 'bin'].forEach(id => {
+    ['arch_64_url', 'arch_64_hash', 'arch_64_extract_dir', 'arch_64_extract_to',
+        'arch_32_url', 'arch_32_hash', 'arch_32_extract_dir', 'arch_32_extract_to',
+        'arch_arm64_url', 'arch_arm64_hash', 'arch_arm64_extract_dir', 'arch_arm64_extract_to',
+        'autoupdate_url', 'autoupdate_64bit_url', 'autoupdate_32bit_url', 'autoupdate_arm64_url', 'license_identifier', 'license_url', 'bin', 'extract_to'].forEach(id => {
             const element = document.getElementById(id);
             if (element) {
                 element.addEventListener('input', updateJson);
@@ -485,15 +530,31 @@ document.addEventListener('DOMContentLoaded', () => {
     copyButton.addEventListener('click', () => {
         navigator.clipboard.writeText(jsonPreview.textContent)
             .then(() => {
-                copyButton.textContent = '已复制!';
-                setTimeout(() => {
-                    copyButton.textContent = '复制到剪贴板';
-                }, 2000);
+                showToast('已复制到剪贴板!');
             })
             .catch(err => {
                 console.error('无法复制文本: ', err);
+                showToast('复制失败', true);
             });
     });
+
+    function showToast(message, isError = false) {
+        const toastContainer = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast show';
+        if (isError) {
+            toast.style.backgroundColor = '#dc3545';
+        }
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toastContainer.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
 
     // 初始化
     toggleLicenseSection();

@@ -1,13 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scoop Manifest 生成器</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <div class="row vh-100">
@@ -19,7 +22,8 @@
                         <h6 class="text-primary mb-3">📋 基本信息</h6>
                         <div class="mb-3">
                             <label for="version" class="form-label">Version</label>
-                            <input type="text" class="form-control" id="version" placeholder="例如: 1.0.0, 2.1.3" required>
+                            <input type="text" class="form-control" id="version" placeholder="例如: 1.0.0, 2.1.3"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
@@ -27,16 +31,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="homepage" class="form-label">Homepage</label>
-                            <input type="url" class="form-control" id="homepage" placeholder="https://example.com" required>
+                            <input type="url" class="form-control" id="homepage" placeholder="https://example.com"
+                                required>
                         </div>
-                        
+
                         <!-- 许可证信息 -->
                         <h6 class="text-primary mb-3 mt-4">📄 许可证信息</h6>
-                        <div class="mb-3">
+                        <div id="license_simple_section" class="mb-3">
                             <label for="license" class="form-label">License</label>
-                            <input type="text" class="form-control" id="license" placeholder="MIT, GPL-3.0, Proprietary等" required>
+                            <input type="text" class="form-control" id="license"
+                                placeholder="MIT, GPL-3.0, Proprietary等" required>
                         </div>
-                        
+
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="license_advanced">
@@ -45,21 +51,22 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="license_advanced_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="license_identifier" class="form-label">License Identifier</label>
-                                <input type="text" class="form-control" id="license_identifier" placeholder="例如: Shareware, MIT, GPL-3.0">
+                                <input type="text" class="form-control" id="license_identifier"
+                                    placeholder="例如: Shareware, MIT, GPL-3.0">
                             </div>
                             <div class="mb-3">
                                 <label for="license_url" class="form-label">License URL</label>
                                 <input type="url" class="form-control" id="license_url" placeholder="许可证的完整URL">
                             </div>
                         </div>
-                        
+
                         <!-- 版本检查 -->
                         <h6 class="text-primary mb-3 mt-4">🔍 版本检查</h6>
-                        
+
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="checkver_simple_mode" checked>
@@ -68,21 +75,23 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="checkver_advanced_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="checkver_url" class="form-label">Checkver URL</label>
-                                <input type="text" class="form-control" id="checkver_url" placeholder="https://www.7-zip.org/download.html">
+                                <input type="text" class="form-control" id="checkver_url"
+                                    placeholder="https://www.7-zip.org/download.html">
                             </div>
                             <div class="mb-3">
                                 <label for="checkver_regex" class="form-label">Checkver Regex</label>
-                                <input type="text" class="form-control" id="checkver_regex" placeholder="Download 7-Zip ([\\d.]+) \\(\\d{4}-\\d{2}-\\d{2}\\)">
+                                <input type="text" class="form-control" id="checkver_regex"
+                                    placeholder="Download 7-Zip ([\\d.]+) \\(\\d{4}-\\d{2}-\\d{2}\\)">
                             </div>
                         </div>
-                        
+
                         <!-- 下载信息 -->
                         <h6 class="text-primary mb-3 mt-4">📦 下载信息</h6>
-                        
+
                         <!-- 多架构支持选项 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -92,22 +101,24 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <!-- 单架构下载信息 -->
                         <div id="single_arch_section">
                             <div class="mb-3">
                                 <label for="url" class="form-label">URL</label>
-                                <input type="url" class="form-control" id="url" placeholder="https://example.com/download.zip" required>
+                                <input type="url" class="form-control" id="url"
+                                    placeholder="https://example.com/download.zip" required>
                             </div>
                             <div class="mb-3">
                                 <div class="form-label-with-tooltip">
                                     <label for="hash" class="form-label">Hash</label>
-                                    <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                    <span class="tooltip-icon"
+                                        data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
                                 </div>
-                                <input type="text" class="form-control" id="hash"required>
+                                <input type="text" class="form-control" id="hash" required>
                             </div>
                         </div>
-                        
+
                         <!-- 多架构下载信息 -->
                         <div id="architecture_section" style="display: none;">
                             <div class="row">
@@ -120,13 +131,20 @@
                                     <div class="mb-3">
                                         <div class="form-label-with-tooltip">
                                             <label for="arch_64_hash" class="form-label">Hash</label>
-                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                            <span class="tooltip-icon"
+                                                data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
                                         </div>
                                         <input type="text" class="form-control" id="arch_64_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_64_extract_dir" class="form-label">Extract Dir</label>
-                                        <input type="text" class="form-control" id="arch_64_extract_dir" placeholder="解压目录">
+                                        <input type="text" class="form-control" id="arch_64_extract_dir"
+                                            placeholder="解压目录">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="arch_64_extract_to" class="form-label">Extract To</label>
+                                        <input type="text" class="form-control" id="arch_64_extract_to"
+                                            placeholder="解压到">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -138,31 +156,36 @@
                                     <div class="mb-3">
                                         <div class="form-label-with-tooltip">
                                             <label for="arch_32_hash" class="form-label">Hash</label>
-                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                            <span class="tooltip-icon"
+                                                data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
                                         </div>
                                         <input type="text" class="form-control" id="arch_32_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_32_extract_dir" class="form-label">Extract Dir</label>
-                                        <input type="text" class="form-control" id="arch_32_extract_dir" placeholder="解压目录">
+                                        <input type="text" class="form-control" id="arch_32_extract_dir"
+                                            placeholder="解压目录">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <h6 class="text-secondary">ARM64架构</h6>
                                     <div class="mb-3">
                                         <label for="arch_arm64_url" class="form-label">URL</label>
-                                        <input type="url" class="form-control" id="arch_arm64_url" placeholder="ARM64版本下载链接">
+                                        <input type="url" class="form-control" id="arch_arm64_url"
+                                            placeholder="ARM64版本下载链接">
                                     </div>
                                     <div class="mb-3">
                                         <div class="form-label-with-tooltip">
                                             <label for="arch_arm64_hash" class="form-label">Hash</label>
-                                            <span class="tooltip-icon" data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
+                                            <span class="tooltip-icon"
+                                                data-tooltip="文件的哈希值，默认SHA256，别的算法需要加前缀，例如：sha512:cb97adb2xxxxx">?</span>
                                         </div>
                                         <input type="text" class="form-control" id="arch_arm64_hash">
                                     </div>
                                     <div class="mb-3">
                                         <label for="arch_arm64_extract_dir" class="form-label">Extract Dir</label>
-                                        <input type="text" class="form-control" id="arch_arm64_extract_dir" placeholder="解压目录">
+                                        <input type="text" class="form-control" id="arch_arm64_extract_dir"
+                                            placeholder="解压目录">
                                     </div>
                                 </div>
                             </div>
@@ -170,59 +193,68 @@
 
                         <!-- 安装配置 -->
                         <h6 class="text-primary mb-3 mt-4">⚙️ 安装配置</h6>
-                        
+
                         <div class="mb-3">
                             <label for="bin" class="form-label">Bin</label>
-                            <textarea class="form-control" id="bin" rows="2" placeholder="每行一个可执行文件路径，或使用格式: 程序.exe,别名,参数"></textarea>
+                            <textarea class="form-control" id="bin" rows="2"
+                                placeholder="每行一个可执行文件路径，或使用格式: 程序.exe,别名,参数"></textarea>
                         </div>
-                        
+
                         <!-- 单架构安装配置 -->
                         <div id="single_arch_install_section">
                             <div class="mb-3">
                                 <label for="extract_dir" class="form-label">Extract Dir</label>
                                 <input type="text" class="form-control" id="extract_dir" placeholder="从压缩包中提取的目录名">
                             </div>
+                            <div class="mb-3">
+                                <label for="extract_to" class="form-label">Extract To</label>
+                                <input type="text" class="form-control" id="extract_to" placeholder="解压到的目录名">
+                            </div>
                         </div>
-                        
+
                         <!-- Autoupdate配置 -->
                         <h6 class="text-secondary mb-3 mt-4">🔄 自动更新配置</h6>
-                        
+
                         <!-- 单架构自动更新 -->
                         <div id="single_arch_autoupdate_section">
                             <div class="mb-3">
                                 <label for="autoupdate_url" class="form-label">更新 URL</label>
-                                <input type="text" class="form-control" id="autoupdate_url" placeholder="https://example.com/v$version/app.zip">
+                                <input type="text" class="form-control" id="autoupdate_url"
+                                    placeholder="https://example.com/v$version/app.zip">
                                 <div class="form-text">使用 $version 作为版本占位符</div>
                             </div>
                         </div>
-                        
+
                         <!-- 多架构自动更新 -->
                         <div id="multi_arch_autoupdate_section" style="display: none;">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="autoupdate_64bit_url" class="form-label">64位 URL</label>
-                                        <input type="text" class="form-control" id="autoupdate_64bit_url" placeholder="https://example.com/v$version/app_x64.zip">
+                                        <input type="text" class="form-control" id="autoupdate_64bit_url"
+                                            placeholder="https://example.com/v$version/app_x64.zip">
                                         <div class="form-text">使用 $version 作为版本占位符</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="autoupdate_32bit_url" class="form-label">32位 URL</label>
-                                        <input type="text" class="form-control" id="autoupdate_32bit_url" placeholder="https://example.com/v$version/app_x86.zip">
+                                        <input type="text" class="form-control" id="autoupdate_32bit_url"
+                                            placeholder="https://example.com/v$version/app_x86.zip">
                                         <div class="form-text">使用 $version 作为版本占位符</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="autoupdate_arm64_url" class="form-label">ARM64 URL</label>
-                                        <input type="text" class="form-control" id="autoupdate_arm64_url" placeholder="https://example.com/v$version/app_arm64.zip">
+                                        <input type="text" class="form-control" id="autoupdate_arm64_url"
+                                            placeholder="https://example.com/v$version/app_arm64.zip">
                                         <div class="form-text">使用 $version 作为版本占位符</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- 快捷方式和持久化 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -232,19 +264,21 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="shortcuts_persist_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="shortcuts" class="form-label">Shortcuts</label>
-                                <textarea class="form-control" id="shortcuts" rows="3" placeholder="每行格式: [\"程序.exe\", \"显示名称\", \"参数\"]"></textarea>
+                                <textarea class="form-control" id="shortcuts" rows="3" placeholder="每行格式: [\" 程序.exe\",
+                                    \"显示名称\", \"参数\"]"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="persist" class="form-label">Persist</label>
-                                <textarea class="form-control" id="persist" rows="2" placeholder="每行一个需要持久化的目录或文件"></textarea>
+                                <textarea class="form-control" id="persist" rows="2"
+                                    placeholder="每行一个需要持久化的目录或文件"></textarea>
                             </div>
                         </div>
-                        
+
                         <!-- 依赖管理 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -254,19 +288,20 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="dependencies_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="depends" class="form-label">Depends</label>
                                 <textarea class="form-control" id="depends" rows="2" placeholder="每行一个依赖包名"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="suggest" class="form-label">Suggest</label>
-                                <textarea class="form-control" id="suggest" rows="2" placeholder="格式: 功能描述: 包名"></textarea>
+                                <textarea class="form-control" id="suggest" rows="2"
+                                    placeholder="格式: 功能描述: 包名"></textarea>
                             </div>
                         </div>
-                        
+
                         <!-- 环境变量设置 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -276,19 +311,21 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="environment_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="env_add_path" class="form-label">Env Add Path</label>
-                                <textarea class="form-control" id="env_add_path" rows="2" placeholder="每行一个相对于安装目录的路径"></textarea>
+                                <textarea class="form-control" id="env_add_path" rows="2"
+                                    placeholder="每行一个相对于安装目录的路径"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="env_set" class="form-label">Env Set</label>
-                                <textarea class="form-control" id="env_set" rows="2" placeholder="每行格式: 变量名=值"></textarea>
+                                <textarea class="form-control" id="env_set" rows="2"
+                                    placeholder="每行格式: 变量名=值"></textarea>
                             </div>
                         </div>
-                        
+
                         <!-- 安装器设置 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -298,7 +335,7 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="installer_section" style="display: none;">
                             <div class="mb-3">
                                 <div class="form-check">
@@ -308,23 +345,56 @@
                                     </label>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="installer_script" class="form-label">Installer Script</label>
-                                <textarea class="form-control" id="installer_script" rows="3" placeholder="每行一个安装命令"></textarea>
+                                <textarea class="form-control" id="installer_script" rows="3"
+                                    placeholder="每行一个安装命令"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="pre_install" class="form-label">Pre Install</label>
-                                <textarea class="form-control" id="pre_install" rows="2" placeholder="每行一个预安装命令"></textarea>
+                                <textarea class="form-control" id="pre_install" rows="2"
+                                    placeholder="每行一个预安装命令"></textarea>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="post_install" class="form-label">Post Install</label>
-                                <textarea class="form-control" id="post_install" rows="2" placeholder="每行一个后安装命令"></textarea>
+                                <textarea class="form-control" id="post_install" rows="2"
+                                    placeholder="每行一个后安装命令"></textarea>
                             </div>
                         </div>
-                        
+
+                        <!-- 其他设置 -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable_uninstaller">
+                                <label class="form-check-label" for="enable_uninstaller">
+                                    配置卸载器和脚本
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="uninstaller_section" style="display: none;">
+                            <div class="mb-3">
+                                <label for="uninstaller_script" class="form-label">Uninstaller Script</label>
+                                <textarea class="form-control" id="uninstaller_script" rows="3"
+                                    placeholder="每行一个卸载命令"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="pre_uninstall" class="form-label">Pre Uninstall</label>
+                                <textarea class="form-control" id="pre_uninstall" rows="2"
+                                    placeholder="每行一个预卸载命令"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="post_uninstall" class="form-label">Post Uninstall</label>
+                                <textarea class="form-control" id="post_uninstall" rows="2"
+                                    placeholder="每行一个后卸载命令"></textarea>
+                            </div>
+                        </div>
+
                         <!-- 其他设置 -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -334,14 +404,15 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div id="misc_section" style="display: none;">
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Notes</label>
-                                <textarea class="form-control" id="notes" rows="2" placeholder="安装后的使用说明或注意事项"></textarea>
+                                <textarea class="form-control" id="notes" rows="2"
+                                    placeholder="安装后的使用说明或注意事项"></textarea>
                             </div>
                         </div>
-                        
+
 
                     </form>
                 </div>
@@ -357,13 +428,15 @@
     "url": "",
     "hash": ""
 }</pre>
-                </div>
-                <div class="mt-auto p-4">
-                    <button id="copy-button" class="btn btn-primary w-100">复制到剪贴板</button>
+                    <div class="mt-3">
+                        <button id="copy-button" class="btn btn-primary w-100">复制到剪贴板</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="toast-container" class="toast-container"></div>
     <script src="script.js"></script>
 </body>
+
 </html>
